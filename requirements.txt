@@ -3,6 +3,7 @@ openai
 openai-agents
 numpy
 PyPDF2
+pymupdf
 python-dotenv
 litellm
 tiktoken
