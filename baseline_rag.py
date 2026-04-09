@@ -5,23 +5,25 @@ Session-based: no file cache, everything in memory.
 import json
 
 import numpy as np
-import PyPDF2
+import pymupdf
 from openai import OpenAI
 
-CHUNK_SIZE = 500
-CHUNK_OVERLAP = 100
+CHUNK_SIZE = 1000
+CHUNK_OVERLAP = 200
 EMBED_MODEL = "text-embedding-3-small"
 TOP_K = 5
 
 
 def extract_pdf_text(pdf_file) -> list[dict]:
-    """Extract text per page from a PDF file object."""
+    """Extract text per page from a PDF using pymupdf for better quality."""
     pages = []
-    reader = PyPDF2.PdfReader(pdf_file)
-    for i, page in enumerate(reader.pages, 1):
-        text = page.extract_text() or ""
+    pdf_bytes = pdf_file.read() if hasattr(pdf_file, "read") else pdf_file
+    doc = pymupdf.open(stream=pdf_bytes, filetype="pdf")
+    for i, page in enumerate(doc, 1):
+        text = page.get_text()
         if text.strip():
             pages.append({"page": i, "text": text})
+    doc.close()
     return pages
 
 
