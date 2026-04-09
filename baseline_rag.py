@@ -103,7 +103,7 @@ class BaselineRAG:
         """Full RAG pipeline: retrieve chunks, generate answer."""
         retrieved = self.retrieve(question, top_k)
         context = "\n\n---\n\n".join(
-            f"[Seite {c['page']}, Score: {c['score']:.3f}]\n{c['text']}"
+            f"[Page {c['page']}, Score: {c['score']:.3f}]\n{c['text']}"
             for c in retrieved
         )
         response = self.client.chat.completions.create(
@@ -112,14 +112,14 @@ class BaselineRAG:
                 {
                     "role": "system",
                     "content": (
-                        "Du bist ein Dokumenten-QA-Assistent. "
-                        "Beantworte die Frage NUR basierend auf dem gegebenen Kontext. "
-                        "Antworte auf Deutsch. Sei praezise."
+                        "You are a document QA assistant. "
+                        "Answer the question ONLY based on the given context. "
+                        "Be concise and precise."
                     ),
                 },
                 {
                     "role": "user",
-                    "content": f"Kontext:\n{context}\n\nFrage: {question}",
+                    "content": f"Context:\n{context}\n\nQuestion: {question}",
                 },
             ],
         )
